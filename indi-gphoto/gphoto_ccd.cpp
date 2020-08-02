@@ -1484,12 +1484,16 @@ bool GPhotoCCD::grabImage()
             uint16_t subX = PrimaryCCD.getSubX();
             uint16_t subY = PrimaryCCD.getSubY();
 
-            // Align all boundaries to be even
-            // This should fix issues with subframed bayered images.
-            //            subX -= subX % 2;
-            //            subY -= subY % 2;
-            //            subW -= subW % 2;
-            //            subH -= subH % 2;
+            // Set bayer pattern offset if boundaries are uneven
+            if (subX % 2)
+            {
+                IUSaveText(&BayerT[0], "1" );
+            }
+
+            if (subY % 2)
+            {
+                IUSaveText(&BayerT[1], "1" );
+            }
 
             int subFrameSize     = subW * subH * bpp / 8 * ((naxis == 3) ? 3 : 1);
             int oneFrameSize     = subW * subH * bpp / 8;
